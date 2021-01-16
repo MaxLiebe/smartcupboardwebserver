@@ -1,0 +1,11 @@
+{
+  "name": "smartcupboardwebserver",
+  "version": "1.0.0",
+  "description": "A web server to connect the Smart Cupboard to the app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Max Liebe",
+  "license": "ISC"
+}
