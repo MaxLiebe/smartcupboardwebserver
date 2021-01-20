@@ -9,6 +9,7 @@
   "author": "Max Liebe",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "serialport": "^9.0.4"
   }
 }

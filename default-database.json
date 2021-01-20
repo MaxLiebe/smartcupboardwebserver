@@ -1,0 +1,37 @@
+{
+    "pantry": [
+        {
+            "name": "tomato",
+            "optimalTemperature": "4"
+        },
+        {
+            "name": "banana",
+            "optimalTemperature": "15"
+        }
+    ],
+    "shoppinglist": [
+        "pringles",
+        "potatoes",
+        "henkie"
+    ],
+    "recipies": [
+        {
+            "title": "Pasta bolognese",
+            "ingredients": [
+                "pasta",
+                "tomato",
+                "cheese"
+            ],
+            "preparation": "Gooi pasta in pan, gooi tomaat in andere pan met wat zooi, kook, schep op, gooi kaas erbij en klaar"
+        },
+        {
+            "title": "Grilled cheese",
+            "ingredients": [
+                "cheese",
+                "bread",
+                "lazyness"
+            ],
+            "preparation": "Heb je hier nou echt een recept voor nodig? Man man man"
+        }
+    ]
+}
