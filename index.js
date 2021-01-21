@@ -1,4 +1,7 @@
+//MAKE SURE TO ADD firebase-service-key.json IN THE ROOT PATH OF THIS PROJECT, OR THE NOTIFCATION SERVICE WILL NOT WORK!
+
 const express = require('express');
+const app = express();
 const fs = require('fs');
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
@@ -8,12 +11,11 @@ firebaseAdmin.initializeApp({
     credential: firebaseAdmin.credential.cert(serviceAccount)
 });
 const messagingService = firebaseAdmin.messaging();
-const messageDeviceToken = 'c7PpXzYZShWmjJC6G0L4Hi:APA91bEPG5jLMYNd0y9kEIXhunRKX0_2w5QNIkVCdUT2kF8obM0GYgIsfRFbHpta9DUwtOw2mv1gZlcqaAfa6N33IJW8Pi2Dj-wasDj8pqtHy6OCQWK3t_DRD1R6iv-xSMwCx6rLbw0T';
-const app = express();
 const port = 3000;
 const database = JSON.parse(fs.readFileSync('default-database.json'));
 let userDatabase = {
-    pantry: []
+    pantry: [],
+    fcmTokens: []
 };
 fs.readFile('user-database.json', (err, db) => {
     if (err) {
@@ -41,6 +43,14 @@ SerialPort.list()
     });
 
 app.use(express.json());
+
+app.get('/registertoken/:token', (req, res) => {
+    let token = req.params.token;
+    if (userDatabase.fcmTokens.indexOf(token) === -1) userDatabase.fcmTokens.push(token);
+    fs.writeFileSync('user-database.json', JSON.stringify(userDatabase));
+    res.send();
+});
+
 app.get('/home', (req, res) => {
     res.send({ temperature, humidity });
 });
@@ -101,7 +111,9 @@ setInterval(() => {
                     priority: "high",
                     timeToLive: 60 * 60 * 4
                 };
-                messagingService.sendToDevice(messageDeviceToken, message, options);
+                userDatabase.fcmTokens.forEach(token => {
+                    messagingService.sendToDevice(token, message, options);
+                })
                 item.hasSentWarning = true;
             }
         }
