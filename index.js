@@ -5,6 +5,16 @@ const Readline = SerialPort.parsers.Readline;
 const app = express();
 const port = 3000;
 const database = JSON.parse(fs.readFileSync('default-database.json'));
+let userDatabase = {
+    pantry: []
+};
+fs.readFile('user-database.json', (err, db) => {
+    if (err) {
+        console.log('User database doesn\'t exist.');
+        return;
+    }
+    userDatabase = JSON.parse(db);
+});
 
 let temperature = '0';
 let humidity = '0';
@@ -29,7 +39,24 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/pantry', (req, res) => {
-    res.send(database.pantry);
+    res.send(userDatabase.pantry);
+});
+
+app.post('/pantry', (req, res) => {
+    let productName = req.body.name;
+    let d = new Date();
+    let timeStamp = d.getTime();
+    userDatabase.pantry.push({
+        id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+        name: productName,
+        timestamp: timeStamp
+    });
+    fs.writeFileSync('user-database.json', JSON.stringify(userDatabase));
+    res.send();
+});
+
+app.get('/products', (req, res) => {
+    res.send(database.products);
 });
 
 app.get('/list', (req, res) => {

@@ -9,6 +9,56 @@
             "optimalTemperature": "15"
         }
     ],
+    "products": [
+        {
+            "name": "strawberries",
+            "optimalTemperature": "1",
+            "optimalHumidity": "92",
+            "expirationDays": "2"
+        },
+        {
+            "name": "tomato",
+            "optimalTemperature": "16",
+            "optimalHumidity": "87",
+            "expirationDays": "7"
+        },
+        {
+            "name": "grapes",
+            "optimalTemperature": "0",
+            "optimalHumidity": "92",
+            "expirationDays": "5"
+        },
+        {
+            "name": "blueberries",
+            "optimalTemperature": "0",
+            "optimalHumidity": "92",
+            "expirationDays": "3"
+        },
+        {
+            "name": "eggplant",
+            "optimalTemperature": "11",
+            "optimalHumidity": "92",
+            "expirationDays": "4"
+        },
+        {
+            "name": "cabbage",
+            "optimalTemperature": "2",
+            "optimalHumidity": "90",
+            "expirationDays": "2"
+        },
+        {
+            "name": "raspberries",
+            "optimalTemperature": "1",
+            "optimalHumidity": "92",
+            "expirationDays": "2"
+        },
+        {
+            "name": "mushrooms",
+            "optimalTemperature": "3",
+            "optimalHumidity": "92",
+            "expirationDays": "3"
+        }
+    ],
     "shoppinglist": [
         "pringles",
         "potatoes",
