@@ -2,6 +2,13 @@ const express = require('express');
 const fs = require('fs');
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
+const firebaseAdmin = require('firebase-admin');
+const serviceAccount = require('./firebase-service-key.json');
+firebaseAdmin.initializeApp({
+    credential: firebaseAdmin.credential.cert(serviceAccount)
+});
+const messagingService = firebaseAdmin.messaging();
+const messageDeviceToken = 'c7PpXzYZShWmjJC6G0L4Hi:APA91bEPG5jLMYNd0y9kEIXhunRKX0_2w5QNIkVCdUT2kF8obM0GYgIsfRFbHpta9DUwtOw2mv1gZlcqaAfa6N33IJW8Pi2Dj-wasDj8pqtHy6OCQWK3t_DRD1R6iv-xSMwCx6rLbw0T';
 const app = express();
 const port = 3000;
 const database = JSON.parse(fs.readFileSync('default-database.json'));
@@ -39,7 +46,11 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/pantry', (req, res) => {
-    res.send(userDatabase.pantry);
+    let toSend = userDatabase.pantry;
+    toSend.forEach((item, index) => {
+        toSend[index].expirationDays = database.products.find(product => product.name === item.name).expirationDays;
+    });
+    res.send(toSend);
 });
 
 app.post('/pantry', (req, res) => {
@@ -49,7 +60,8 @@ app.post('/pantry', (req, res) => {
     userDatabase.pantry.push({
         id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
         name: productName,
-        timestamp: timeStamp
+        timestamp: timeStamp,
+        hasSentWarning: false
     });
     fs.writeFileSync('user-database.json', JSON.stringify(userDatabase));
     res.send();
@@ -70,3 +82,29 @@ app.get('/recipies', (req, res) => {
 app.listen(port, () => {
     console.log(`Server listening at port ${port}`);
 });
+
+setInterval(() => {
+    let curTime = new Date().getTime();
+    userDatabase.pantry.forEach(item => {
+        if (!item.hasSentWarning) {
+            let expirationDays = database.products.find(product => product.name === item.name).expirationDays;
+            const oneDay = 24 * 60 * 60 * 1000;
+            const diffDays = Math.round(Math.abs((item.timestamp - curTime) / oneDay));
+            if (diffDays >= expirationDays - 1) {
+                let message = {
+                    notification: {
+                        title: `Your ${item.name} will expire in a day!`,
+                        body: 'Open the app to find recipies!'
+                    }
+                }
+                let options = {
+                    priority: "high",
+                    timeToLive: 60 * 60 * 4
+                };
+                messagingService.sendToDevice(messageDeviceToken, message, options);
+                item.hasSentWarning = true;
+            }
+        }
+    });
+    fs.writeFileSync('user-database.json', JSON.stringify(userDatabase));
+}, 10000);

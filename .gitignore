@@ -1,2 +1,3 @@
 node_modules/
-local-database.json
+user-database.json
+firebase-service-key.json

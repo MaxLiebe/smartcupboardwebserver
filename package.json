@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "firebase-admin": "^9.4.2",
     "serialport": "^9.0.4"
   }
 }
